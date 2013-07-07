@@ -1,0 +1,5 @@
+
+syntax: regexp
+^src/main/webapp/WEB-INF/classes$
+syntax: regexp
+^src/main/webapp/WEB-INF/lib$
