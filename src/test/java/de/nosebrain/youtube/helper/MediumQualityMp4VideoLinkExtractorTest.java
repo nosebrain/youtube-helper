@@ -1,6 +1,9 @@
 package de.nosebrain.youtube.helper;
 
-import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.text.IsEmptyString.isEmptyString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -12,7 +15,8 @@ public class MediumQualityMp4VideoLinkExtractorTest {
   
   @Test
   public void testVideo1() {
-    final Video videoLink = EXTRACTOR.getVideoLink("Mcv75hETSjk");
-    assertEquals("", videoLink.getUrl());
+    final Video videoLink = EXTRACTOR.getVideoLink("mtaIpkjF6Ss");
+    assertNotNull(videoLink);
+    assertThat(videoLink.getUrl(), not(isEmptyString()));
   }
 }

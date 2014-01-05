@@ -31,33 +31,32 @@ public class MediumQualityMp4VideoLinkExtractor implements VideoLinkExtractor {
     try {
       final Document site = Jsoup.connect("http://www.youtube.com/watch?v=" + id).get();
       final Elements scripts = site.select("script");
-      if (scripts.size() >= 5) {
-        final Element script = scripts.get(4);
-        final String value = script.toString();
-        final Matcher matcher = VAR_EXTRACTOR_PATTERN.matcher(value);
-        if (matcher.find()) {
-          final String mapsString = matcher.group(1);
-          final String[] splittedMaps = mapsString.split(",");
-          for (final String map : splittedMaps) {
-            final String toParse = map.replaceAll("\\\\u0026", "\n");
-            final StringReader reader = new StringReader(toParse);
-            final Properties propertyMap = new Properties();
-            propertyMap.load(reader);
-            final String type = propertyMap.getProperty("type");
-            final String quality = propertyMap.getProperty("quality");
-            if (type.startsWith("video%2Fmp4") && "medium".equals(quality)) {
-              final Video video = new Video();
-              video.setSignature(propertyMap.getProperty("sig"));
-              video.setUrl(UrlUtils.decodeUrlString(propertyMap.getProperty("url")));
-              final Elements titleSelects = site.select("meta[name=title]");
-              if (present(titleSelects)) {
-                final String title = titleSelects.get(0).attr("content");
-                video.setTitle(title);
+      for (Element script : scripts) {
+          final String value = script.toString();
+          final Matcher matcher = VAR_EXTRACTOR_PATTERN.matcher(value);
+          if (matcher.find()) {
+            final String mapsString = matcher.group(1);
+            final String[] splittedMaps = mapsString.split(",");
+            for (final String map : splittedMaps) {
+              final String toParse = map.replaceAll("\\\\u0026", "\n");
+              final StringReader reader = new StringReader(toParse);
+              final Properties propertyMap = new Properties();
+              propertyMap.load(reader);
+              final String type = propertyMap.getProperty("type");
+              final String quality = propertyMap.getProperty("quality");
+              if (type.startsWith("video%2Fmp4") && "medium".equals(quality)) {
+                final Video video = new Video();
+                video.setSignature(propertyMap.getProperty("sig"));
+                video.setUrl(UrlUtils.decodeUrlString(propertyMap.getProperty("url")));
+                final Elements titleSelects = site.select("meta[name=title]");
+                if (present(titleSelects)) {
+                  final String title = titleSelects.get(0).attr("content");
+                  video.setTitle(title);
+                }
+                return video;
               }
-              return video;
             }
           }
-        }
       }
     } catch (final IOException e) {
       log.error("error while getting web page for " + id, e);
