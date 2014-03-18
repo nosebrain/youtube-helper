@@ -5,3 +5,5 @@ target
 .project
 .classpath
 .tomcatplugin
+pom.xml.releaseBackup
+release.properties
