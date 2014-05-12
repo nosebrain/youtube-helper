@@ -7,3 +7,5 @@ target
 .tomcatplugin
 pom.xml.releaseBackup
 release.properties
+syntax: regexp
+^work$
