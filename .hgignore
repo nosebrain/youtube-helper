@@ -1,11 +1,11 @@
-src/main/webapp/WEB-INF/classes
-src/main/webapp/WEB-INF/lib
+WEB-INF/classes
+WEB-INF/lib
 bin
 target
+work
 .project
 .classpath
 .tomcatplugin
+.settings
 pom.xml.releaseBackup
 release.properties
-syntax: regexp
-^work$
