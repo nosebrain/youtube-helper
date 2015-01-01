@@ -70,8 +70,8 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<server>nas</server>
-					<url>http://nas.local:7080/manager/text</url>
+					<server>prod</server>
+					<url>http://10.0.1.152:8080/manager/text</url>
 				</configuration>
 			</plugin>
 			<plugin>
