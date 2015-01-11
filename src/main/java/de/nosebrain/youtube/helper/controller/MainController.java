@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import de.nosebrain.youtube.helper.model.Video;
+import de.nosebrain.youtube.helper.model.VideoLink;
+import de.nosebrain.youtube.helper.model.VideoQuality;
 import de.nosebrain.youtube.helper.service.VideoLinkExtractor;
 
 @Controller
@@ -20,10 +22,18 @@ public class MainController {
   private VideoLinkExtractor extractor;
   
   @RequestMapping("/index.mp4")
-  public String getVideo(@RequestParam("id") final String id) throws UnsupportedEncodingException {
-    final Video videoLink = this.extractor.getVideoLink(id);
-    if (present(videoLink)) {
-      return "redirect:" + videoLink.getUrl() + "&signature=" + videoLink.getSignature() + "&title=" + URLEncoder.encode(videoLink.getTitle(), "UTF-8");
+  public String getVideo(@RequestParam("id") final String id, @RequestParam(value = "quality", required = false) VideoQuality quality) throws UnsupportedEncodingException {
+    if (quality == null) {
+      quality = VideoQuality.MEDIUM;
+    }
+    final Video video = this.extractor.getVideoLink(id);
+    if (present(video)) {
+      final VideoLink link = video.getLinks().get(quality);
+      String redirectUrl = link.getUrl();
+      if (!link.isUrlContainsSignature()) {
+        redirectUrl += "&signature=" + link.getSignature();
+      }
+      return "redirect:" + redirectUrl + "&title=" + URLEncoder.encode(video.getTitle(), "UTF-8");
     }
     
     return null;

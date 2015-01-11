@@ -1,25 +1,27 @@
 package de.nosebrain.youtube.helper.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Video {
   
-  private String url;
+  private Map<VideoQuality, VideoLink> links = new HashMap<VideoQuality, VideoLink>();
   private String title;
-  private String signature;
-  
+
   /**
-   * @return the url
+   * @return the links
    */
-  public String getUrl() {
-    return this.url;
+  public Map<VideoQuality, VideoLink> getLinks() {
+    return this.links;
   }
-  
+
   /**
-   * @param url the url to set
+   * @param links the links to set
    */
-  public void setUrl(final String url) {
-    this.url = url;
+  public void setLinks(final Map<VideoQuality, VideoLink> links) {
+    this.links = links;
   }
-  
+
   /**
    * @return the title
    */
@@ -32,19 +34,5 @@ public class Video {
    */
   public void setTitle(final String title) {
     this.title = title;
-  }
-  
-  /**
-   * @return the signature
-   */
-  public String getSignature() {
-    return this.signature;
-  }
-  
-  /**
-   * @param signature the signature to set
-   */
-  public void setSignature(final String signature) {
-    this.signature = signature;
   }
 }
