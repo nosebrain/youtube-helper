@@ -2,8 +2,8 @@ package de.nosebrain.youtube.helper;
 
 import static de.nosebrain.util.ValidationUtils.present;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
