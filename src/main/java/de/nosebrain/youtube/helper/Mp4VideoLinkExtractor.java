@@ -26,7 +26,7 @@ import de.nosebrain.youtube.helper.service.VideoLinkExtractor;
 public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
   private static final Logger log = LoggerFactory.getLogger(Mp4VideoLinkExtractor.class);
   
-  private static final Pattern VAR_EXTRACTOR_PATTERN = Pattern.compile("\"url_encoded_fmt_stream_map\": \"([^\"]*)\"");
+  private static final Pattern VAR_EXTRACTOR_PATTERN = Pattern.compile("\"url_encoded_fmt_stream_map\":\"([^\"]*)\"");
   
   
   @Override
@@ -44,7 +44,6 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
             final Video video = new Video();
             for (final String map : splittedMaps) {
               final String toParse = map.replaceAll("\\\\u0026", "\n");
-              System.out.println(toParse);
               final StringReader reader = new StringReader(toParse);
               final Properties propertyMap = new Properties();
               propertyMap.load(reader);
