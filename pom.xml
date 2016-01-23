@@ -9,11 +9,20 @@
 		<developerConnection>scm:hg:ssh://hg@bitbucket.org/nosebrain/youtube-helper</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
+	
 	<properties>
 		<spring.version>4.0.5.RELEASE</spring.version>
 		<spring-security.version>3.2.0.RELEASE</spring-security.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<id>artifactory.nosebrain.de</id>
+			<url>http://10.0.1.152:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>
