@@ -19,7 +19,7 @@
 	<repositories>
 		<repository>
 			<id>artifactory.nosebrain.de</id>
-			<url>http://10.0.1.152:8081/artifactory/repo</url>
+			<url>http://artifactory.nosebrain.dynv6.net/artifactory/repo</url>
 		</repository>
 	</repositories>
 	
