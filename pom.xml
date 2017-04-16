@@ -19,7 +19,7 @@
 	<repositories>
 		<repository>
 			<id>artifactory.nosebrain.de</id>
-			<url>http://artifactory.nosebrain.dynv6.net/artifactory/repo</url>
+			<url>https://artifactory.nosebrain.de/artifactory/repo</url>
 		</repository>
 	</repositories>
 	
@@ -80,7 +80,7 @@
 				<version>2.2</version>
 				<configuration>
 					<server>prod</server>
-					<url>http://10.0.1.152:8080/manager/text</url>
+					<url>http://nosebrain.de:8080/manager/text</url>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -9,3 +9,5 @@ work
 .settings
 pom.xml.releaseBackup
 release.properties
+
+youtube-helper.iml
