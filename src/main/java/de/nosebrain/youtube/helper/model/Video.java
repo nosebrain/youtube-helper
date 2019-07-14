@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Video {
   
-  private Map<VideoQuality, VideoLink> links = new HashMap<VideoQuality, VideoLink>();
+  private Map<VideoQuality, VideoLink> links = new HashMap<>();
   private String title;
 
   /**

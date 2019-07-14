@@ -2,7 +2,6 @@ package de.nosebrain.youtube.helper;
 
 import static de.nosebrain.util.ValidationUtils.present;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -27,7 +26,7 @@ public class Mp4VideoLinkExtractorTest {
   @Parameters
   public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][] {
-               { "lp-EO5I60KA" }, { "mtaIpkjF6Ss" }
+               { "lp-EO5I60KA" }, { "fHAOWLhrxhQ" }
          });
   }
   
@@ -47,10 +46,6 @@ public class Mp4VideoLinkExtractorTest {
       final VideoLink videoLink = video.getLinks().get(quality);
       if (!present(videoLink)) {
         continue;
-      }
-      
-      if (!videoLink.isUrlContainsSignature()) {
-        assertThat(videoLink.getSignature(), not(nullValue()));
       }
       
       assertThat(videoLink.getUrl(), not(isEmptyString()));
