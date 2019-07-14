@@ -30,8 +30,9 @@ public class MainController {
     if (present(video)) {
       final VideoLink link = video.getLinks().get(quality);
       String redirectUrl = link.getUrl();
-      if (!link.isUrlContainsSignature()) {
-        redirectUrl += "&signature=" + link.getSignature();
+      final String signature = link.getSignature();
+      if (!link.isUrlContainsSignature() && present(signature)) {
+        redirectUrl += "&signature=" + signature;
       }
       return "redirect:" + redirectUrl + "&title=" + URLEncoder.encode(video.getTitle(), "UTF-8");
     }
