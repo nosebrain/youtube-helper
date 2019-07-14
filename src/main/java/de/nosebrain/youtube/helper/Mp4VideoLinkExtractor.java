@@ -53,17 +53,6 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
                 final VideoQuality videoQuality = VideoQuality.valueOf(quality.toUpperCase());
                 final VideoLink videoLink = new VideoLink();
                 final String link = UrlUtils.decodeUrlString(propertyMap.getProperty("url"));
-                
-                if (present(link) && link.contains("signature=")) {
-                  videoLink.setUrlContainsSignature(true);
-                } else {
-                  String signature = propertyMap.getProperty("sig");
-                  if (!present(signature)) {
-                    signature = propertyMap.getProperty("s");
-                  }
-                  videoLink.setSignature(signature);
-                }
-                
                 videoLink.setUrl(link);
                 video.getLinks().put(videoQuality, videoLink);
                 final Elements titleSelects = site.select("meta[name=title]");
@@ -73,7 +62,6 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
                 }
               }
             }
-            this.fixSignatures(video);
             return video;
           }
       }
@@ -83,32 +71,4 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
     
     return null;
   }
-
-
-  private void fixSignatures(final Video video) {
-    int count = 0;
-    int sigCount = 0;
-    String signature = null;
-    for (final VideoQuality quality : VideoQuality.values()) {
-      final VideoLink videoLink = video.getLinks().get(quality);
-      if (present(videoLink)) {
-        count++;
-        final String currentSignature = videoLink.getSignature();
-        if (present(currentSignature)) {
-          sigCount++;
-          signature = currentSignature;
-        }
-      }
-    }
-    
-    if ((count != sigCount) && (sigCount == 1)) {
-      for (final VideoQuality quality : VideoQuality.values()) {
-        final VideoLink videoLink = video.getLinks().get(quality);
-        if (present(videoLink)) {
-          videoLink.setSignature(signature);
-        }
-      }
-    }
-  }
-
 }
