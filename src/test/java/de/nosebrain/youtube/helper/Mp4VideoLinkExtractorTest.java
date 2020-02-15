@@ -26,8 +26,11 @@ public class Mp4VideoLinkExtractorTest {
   @Parameters
   public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][] {
-               { "lp-EO5I60KA" }, { "fHAOWLhrxhQ" }, { "v7Xmh-weq1g" }
-         });
+        { "lp-EO5I60KA" },
+        { "fHAOWLhrxhQ" },
+        { "v7Xmh-weq1g" },
+        { "blLzFlz1CO8" }
+      });
   }
   
   private final String id;

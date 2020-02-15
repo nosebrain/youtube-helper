@@ -54,21 +54,26 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
               if (mimeType.startsWith("video/mp4")) {
                 final VideoQuality videoQuality = VideoQuality.valueOf(quality.toUpperCase());
                 final VideoLink videoLink = new VideoLink();
-                final String cipher = jsonFormat.getString("cipher");
-                final String[] split = cipher.split("&");
-                String url = null;
-                String sig = null;
-                for (String possibleUrl : split) {
-                  if (possibleUrl.startsWith("url")) {
-                    url = UrlUtils.decodeUrlString(possibleUrl.replace("url=", ""));
+                String videoUrl;
+                if (jsonFormat.has("cipher")) {
+                  final String cipher = jsonFormat.getString("cipher");
+                  final String[] split = cipher.split("&");
+                  String url = null;
+                  String sig = null;
+                  for (String possibleUrl : split) {
+                    if (possibleUrl.startsWith("url")) {
+                      url = UrlUtils.decodeUrlString(possibleUrl.replace("url=", ""));
+                    }
+                    if (possibleUrl.startsWith("s=")) {
+                      sig = UrlUtils.decodeUrlString(possibleUrl.substring(2));
+                    }
                   }
-                  if (possibleUrl.startsWith("s=")) {
-                    sig = UrlUtils.decodeUrlString(possibleUrl.substring(2));
-                  }
+                  videoUrl = url + "&sig=" + UrlUtils.encodeUrlString(sign(sig));
+                } else {
+                  videoUrl = jsonFormat.getString("url");
                 }
 
-                videoLink.setUrl(url + "&sig=" + UrlUtils.encodeUrlString(sign(sig)));
-
+                videoLink.setUrl(videoUrl);
                 video.getLinks().put(videoQuality, videoLink);
               }
             }
