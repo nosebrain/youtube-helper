@@ -29,6 +29,5 @@
 	<!-- config -->
 	<mvc:annotation-driven />
 	<context:component-scan base-package="de.nosebrain.youtube.helper" />
-	
-	<import resource="youtube-helper-security.xml" />
+
 </beans>
