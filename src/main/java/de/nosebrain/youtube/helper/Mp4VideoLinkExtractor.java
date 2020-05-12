@@ -26,8 +26,7 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
   private static final Logger log = LoggerFactory.getLogger(Mp4VideoLinkExtractor.class);
   
   private static final Pattern VAR_EXTRACTOR_PATTERN = Pattern.compile("ytplayer\\.config = (.+);ytplayer\\.load");
-  
-  
+
   @Override
   public Video getVideoLink(final String id) {
     try {
