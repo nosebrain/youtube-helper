@@ -29,7 +29,8 @@ public class Mp4VideoLinkExtractorTest {
         { "lp-EO5I60KA" },
         { "fHAOWLhrxhQ" },
         { "v7Xmh-weq1g" },
-        { "blLzFlz1CO8" }
+        { "blLzFlz1CO8" },
+        { "Lxq6JgKLNXI" }
       });
   }
   

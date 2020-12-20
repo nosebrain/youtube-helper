@@ -1,17 +1,9 @@
 package de.nosebrain.youtube.helper;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import de.nosebrain.util.web.UrlUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.github.kiulian.downloader.YoutubeDownloader;
+import com.github.kiulian.downloader.YoutubeException;
+import com.github.kiulian.downloader.model.YoutubeVideo;
+import com.github.kiulian.downloader.model.formats.VideoFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,111 +16,43 @@ import de.nosebrain.youtube.helper.service.VideoLinkExtractor;
 @Component
 public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
   private static final Logger log = LoggerFactory.getLogger(Mp4VideoLinkExtractor.class);
-  
-  private static final Pattern VAR_EXTRACTOR_PATTERN = Pattern.compile("ytplayer\\.config = (.+);ytplayer\\.load");
 
   @Override
   public Video getVideoLink(final String id) {
     try {
-      final Document site = Jsoup.connect("https://www.youtube.com/watch?v=" + id).get();
-      log.debug(site.html());
-      final Elements scripts = site.select("script");
-      for (final Element script : scripts) {
-          final String value = script.toString();
-          final Matcher matcher = VAR_EXTRACTOR_PATTERN.matcher(value);
-          if (matcher.find()) {
-            final String mapsString = matcher.group(1);
-            final JSONObject obj = new JSONObject(mapsString);
+      final YoutubeDownloader downloader = new YoutubeDownloader();
+      final YoutubeVideo videoInfo = downloader.getVideo(id);
 
-            final String info = obj.getJSONObject("args").getString("player_response");
-            final JSONObject jsonInfo = new JSONObject(info.replace("\\u0026", "&"));
+      final Video video = new Video();
 
-            final JSONArray formats = jsonInfo.getJSONObject("streamingData").getJSONArray("formats");
-            final Video video = new Video();
-
-            for (int i = 0 ; i < formats.length(); i++) {
-              final JSONObject jsonFormat = formats.getJSONObject(i);
-              final String mimeType = jsonFormat.getString("mimeType");
-              final String quality = jsonFormat.getString("quality");
-              if (mimeType.startsWith("video/mp4")) {
-                final VideoQuality videoQuality = VideoQuality.valueOf(quality.toUpperCase());
-                final VideoLink videoLink = new VideoLink();
-                String videoUrl;
-                if (jsonFormat.has("cipher")) {
-                  final String cipher = jsonFormat.getString("cipher");
-                  final String[] split = cipher.split("&");
-                  String url = null;
-                  String sig = null;
-                  for (String possibleUrl : split) {
-                    if (possibleUrl.startsWith("url")) {
-                      url = UrlUtils.decodeUrlString(possibleUrl.replace("url=", ""));
-                    }
-                    if (possibleUrl.startsWith("s=")) {
-                      sig = UrlUtils.decodeUrlString(possibleUrl.substring(2));
-                    }
-                  }
-                  videoUrl = url + "&sig=" + UrlUtils.encodeUrlString(sign(sig));
-                } else {
-                  videoUrl = jsonFormat.getString("url");
-                }
-
-                videoLink.setUrl(videoUrl);
-                video.getLinks().put(videoQuality, videoLink);
-              }
-            }
-
-            video.setTitle(jsonInfo.getJSONObject("videoDetails").getString("title"));
-            return video;
-          }
+      for (final VideoFormat videoFormat : videoInfo.videoFormats()) {
+        final VideoQuality videoQuality = convertVideoFormat(videoFormat.videoQuality());
+        if (videoQuality == null) {
+          continue;
+        }
+        final VideoLink videoLink = new VideoLink();
+        videoLink.setUrl(videoFormat.url());
+        video.getLinks().put(videoQuality, videoLink);
       }
-    } catch (final IOException e) {
-      log.error("error while getting web page for " + id, e);
+
+      video.setTitle(videoInfo.details().title());
+      return video;
+    } catch (final YoutubeException e) {
+      log.error("error while extracting video info", e);
     }
-    
     return null;
   }
 
-  private static String sign(String signature) {
-    String[] chars = signature.split("");
-    // Js.MR(a,8);
-    swap(chars, 8);
-    // Js.kF(a,37);
-    reverse(chars, 0, chars.length - 1);
-    // Js.MR(a,57);
-    swap(chars, 57);
-    // Js.MR(a,44);
-    swap(chars, 44);
-    // Js.yT(a,1);
-    chars = splice(chars, 1);
-    // Js.MR(a,53);
-    swap(chars, 53);
-    // Js.kF(a,30)
-    reverse(chars, 0, chars.length - 1);
-
-    return String.join("", chars);
-  }
-
-  private static String[] splice(String[] array, int till) {
-    return Arrays.copyOfRange(array, till, array.length);
-    // a.splice(0,b)
-  }
-
-  private static void reverse(String[] array, int start, int end) {
-    String temp;
-
-    while (start < end) {
-      temp = array[start];
-      array[start] = array[end];
-      array[end] = temp;
-      start++;
-      end--;
+  private static VideoQuality convertVideoFormat(com.github.kiulian.downloader.model.quality.VideoQuality videoQuality) {
+    switch (videoQuality) {
+      case hd720: return VideoQuality.HD720;
+      case hd1080: return VideoQuality.HD1080;
+      case large: return VideoQuality.LARGE;
+      case tiny: return VideoQuality.TINY;
+      case medium: return VideoQuality.MEDIUM;
+      case small: return VideoQuality.SMALL;
     }
-  }
 
-  // mr(a, b)
-  private static void swap(String[] array, int position) {
-    String save = array[0];
-    array[0] = array[position % array.length];
-    array[position % array.length]= save;
+    return null;
   }
 }
