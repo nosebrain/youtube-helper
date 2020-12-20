@@ -26,13 +26,16 @@ public class Mp4VideoLinkExtractor implements VideoLinkExtractor {
       final Video video = new Video();
 
       for (final VideoFormat videoFormat : videoInfo.videoFormats()) {
-        final VideoQuality videoQuality = convertVideoFormat(videoFormat.videoQuality());
-        if (videoQuality == null) {
-          continue;
+        final String mimeType = videoFormat.mimeType();
+        if (mimeType.contains("mp4") && mimeType.contains("avc1")) {
+          final VideoQuality videoQuality = convertVideoFormat(videoFormat.videoQuality());
+          if (videoQuality == null) {
+            continue;
+          }
+          final VideoLink videoLink = new VideoLink();
+          videoLink.setUrl(videoFormat.url());
+          video.getLinks().put(videoQuality, videoLink);
         }
-        final VideoLink videoLink = new VideoLink();
-        videoLink.setUrl(videoFormat.url());
-        video.getLinks().put(videoQuality, videoLink);
       }
 
       video.setTitle(videoInfo.details().title());
